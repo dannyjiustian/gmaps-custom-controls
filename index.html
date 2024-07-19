@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Custom Controls Google Maps</title>
+    <!-- Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <!-- Custom CSS file -->
+    <link rel="stylesheet" type="text/css" href="./style.css" />
+  </head>
+  <body>
+    <!-- Map container -->
+    <div id="map"></div>
+
+    <!-- Hidden controls to be added to the map later -->
+    <div style="display: none">
+      <!-- Search address control -->
+      <div
+        class="search-address-gmaps border-full-gmaps"
+        id="search-address-gmaps">
+        <div class="action-form-gmaps">
+          <input
+            type="text"
+            id="input-address-gmaps"
+            placeholder="Search Address!"
+            autocomplete="off" />
+          <button id="action-address-gmaps">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+        </div>
+        <span
+          class="divider-gmaps hide-element-gmaps element-search-hide-gmaps"></span>
+        <div
+          class="search-items-gmaps hide-element-gmaps element-search-hide-gmaps"
+          id="result-search-gmaps"></div>
+      </div>
+
+      <!-- Navigation controls -->
+      <div class="navigation-control-gmaps" id="navigation-control-gmaps">
+        <!-- Fullscreen control -->
+        <div class="navigation-control-basic-gmaps">
+          <button title="Fullscreen" id="fullscreen-control-gmaps">
+            <i class="fa-solid fa-maximize"></i>
+          </button>
+        </div>
+        <!-- Zoom controls -->
+        <div class="navigation-control-basic-gmaps zoom-control-gmaps">
+          <button title="Zoom In" id="zoom-in-control-gmaps">
+            <i class="fa-solid fa-circle-plus"></i>
+          </button>
+          <span class="divider-gmaps"></span>
+          <button title="Zoom Out" id="zoom-out-control-gmaps">
+            <i class="fa-solid fa-circle-minus"></i>
+          </button>
+        </div>
+        <!-- Geocoding control -->
+        <div class="navigation-control-basic-gmaps">
+          <button title="Geocoding" id="geocoding-control-gmaps">
+            <i class="fa-solid fa-location-crosshairs"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Info controls -->
+      <div class="info-control-gmaps" id="info-control-gmaps">
+        Select Location Point
+      </div>
+    </div>
+
+    <!-- Importing Google Maps JavaScript API -->
+    <script type="module" src="./index.js"></script>
+    <script>
+      ((g) => {
+        var h,
+          a,
+          k,
+          p = "The Google Maps JavaScript API",
+          c = "google",
+          l = "importLibrary",
+          q = "__ib__",
+          m = document,
+          b = window;
+        b = b[c] || (b[c] = {});
+        var d = b.maps || (b.maps = {}),
+          r = new Set(),
+          e = new URLSearchParams(),
+          u = () =>
+            h ||
+            (h = new Promise(async (f, n) => {
+              await (a = m.createElement("script"));
+              e.set("libraries", [...r] + "");
+              for (k in g)
+                e.set(
+                  k.replace(/[A-Z]/g, (t) => "_" + t[0].toLowerCase()),
+                  g[k]
+                );
+              e.set("callback", c + ".maps." + q);
+              a.src = `https://maps.${c}apis.com/maps/api/js?` + e;
+              d[q] = f;
+              a.onerror = () => (h = n(Error(p + " could not load.")));
+              a.nonce = m.querySelector("script[nonce]")?.nonce || "";
+              m.head.append(a);
+            }));
+        d[l]
+          ? console.warn(p + " only loads once. Ignoring:", g)
+          : (d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)));
+      })({ key: "YOUR_API_KEY", v: "weekly" });
+    </script>
+
+    <!-- For getting distance (commented) -->
+    <!-- https://maps.googleapis.com/maps/api/distancematrix/json?destinations=-0.02394676,109.342632&origins=-0.04394676,109.842632&units=imperial&key=YOUR_API_KEY -->
+
+    <!-- For geocoding (commented) -->
+    <!-- https://maps.googleapis.com/maps/api/geocode/json?latlng=-0.02394676,109.342632&key=YOUR_API_KEY -->
+  </body>
+</html>
