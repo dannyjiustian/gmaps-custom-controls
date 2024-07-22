@@ -49,7 +49,9 @@ async function initMap() {
   );
 
   // Add the info control to the map at the BOTTOM_CENTER position
-  map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(infoControlGmaps);
+  map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(
+    infoControlGmaps
+  );
 
   // Function to update the search state based on whether the input field is empty or not
   const toggleSearchState = () => {
@@ -109,6 +111,7 @@ async function initMap() {
           await place.fetchFields({
             fields: ["displayName", "formattedAddress", "location"], // Fetch detailed fields for the place
           });
+          inputAddressGmaps.value = place.displayName; // Change the value inputAddressGmaps
           map.panTo(place.location); // Center the map on the selected place
           map.setZoom(15); // Zoom in on the selected place
           if (window.currentMarker) window.currentMarker.setMap(null); // Remove any existing marker
@@ -209,6 +212,72 @@ async function initMap() {
     }
   });
 }
+
+// Add an event listener for 'keydown' events on the entire document
+document.addEventListener("keydown", function (event) {
+  // Select the address input field and convert suggestion elements into an array
+  const inputAddressGmaps = document.querySelector("#input-address-gmaps");
+  const suggestions = Array.from(
+    document.querySelectorAll(".select-suggest-address-gmaps")
+  );
+
+  // Find the index of the currently selected suggestion, if any
+  let currentIndex = suggestions.findIndex((suggestion) =>
+    suggestion.classList.contains("selected")
+  );
+
+  // Handle 'ArrowDown' key press
+  if (event.key === "ArrowDown") {
+    // Remove 'selected' class from the current suggestion, if there is one
+    if (currentIndex !== -1) suggestions[currentIndex].classList.remove("selected");
+
+    // Move to the next suggestion or reset to the start if at the end
+    currentIndex = (currentIndex + 1) % (suggestions.length + 1);
+    if (currentIndex < suggestions.length) {
+      // Add 'selected' class to the new suggestion
+      suggestions[currentIndex].classList.add("selected");
+      // Blur the input field to prevent it from receiving focus
+      inputAddressGmaps.blur();
+    } else {
+      // Reset selection if beyond the last suggestion and refocus the input field
+      inputAddressGmaps.focus();
+    }
+  }
+  // Handle 'ArrowUp' key press
+  else if (event.key === "ArrowUp") {
+    // Remove 'selected' class from the current suggestion, if there is one
+    if (currentIndex !== -1) suggestions[currentIndex].classList.remove("selected");
+    // Move to the previous suggestion or reset to the end if at the start
+    currentIndex = (currentIndex - 1 + suggestions.length + 1) % (suggestions.length + 1);
+    if (currentIndex < suggestions.length) {
+      // Add 'selected' class to the new suggestion
+      suggestions[currentIndex].classList.add("selected");
+      // Blur the input field to prevent it from receiving focus
+      inputAddressGmaps.blur();
+    } else {
+      // Reset selection if beyond the first suggestion and refocus the input field
+      inputAddressGmaps.focus();
+      // Set the cursor to the end of the input field's value to maintain user typing position
+      setTimeout(
+        () =>
+          inputAddressGmaps.setSelectionRange(
+            inputAddressGmaps.value.length,
+            inputAddressGmaps.value.length
+          ),
+        0
+      );
+    }
+  }
+  // Handle 'Enter' key press
+  else if (event.key === "Enter") {
+    // Find and click the currently selected suggestion
+    const selectedSuggestion = document.querySelector(
+      ".select-suggest-address-gmaps.selected"
+    );
+    if (selectedSuggestion) selectedSuggestion.click();
+  }
+});
+
 
 // Check if the given element is currently in fullscreen mode
 const isFullscreen = (element) =>
