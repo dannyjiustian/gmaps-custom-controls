@@ -100,7 +100,7 @@ body {
 }
 
 /* Hover effect for search items */
-.search-items-gmaps span:hover {
+.search-items-gmaps span:hover, .selected {
   background-color: rgba(
     60,
     64,
